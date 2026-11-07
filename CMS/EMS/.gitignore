@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Python environment and cache
+__pycache__/
+*.py[cod]
+*$py.class
+env/
+venv/
+.env
+
+# Local Databases (if applicable)
+*.sqlite3
+*.db
