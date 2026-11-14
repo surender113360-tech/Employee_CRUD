@@ -1,59 +1,32 @@
-# main.py
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from db import engine, base
-from create_login import router as auth_router
-from security import check_role, get_curr_user
-import user_model
-from HR.router import router as hr_router
-from HR.schemas import EmployeeOffboard 
-from HR import hr_models
-
-
+from db import base,engine,session
+import Models
+from seed import seed_defaults
+from Router import auth,hr,employee
 
 
 base.metadata.create_all(bind=engine)
+with session() as db:
+    seed_defaults(db)
 
-app = FastAPI()
-
+app = FastAPI(title="HRMS API",version = "1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins="*",
     allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*']
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 
-app.include_router(
-    auth_router,
-    prefix='/auth',
-    tags=['authentication']
-)
-
-app.include_router(
-    hr_router,
-    prefix = '/hr',
-    tags = ['hr operations'],
-    dependencies=[Depends(check_role(allowed_roles=['hr']))]
-
-)
-
-allow_hr_only = ['hr']
-allow_employee_only = ['employee']
+app.include_router(auth.router)
+app.include_router(hr.router)
+app.include_router(employee.router)
 
 
-
-@app.get('/hr')
-def hr_dashboard(current_user: user_model.users = Depends(check_role(allowed_roles=allow_hr_only))):
-    return {
-        "status": "welcome to the HR dashboard",
-        "message": f"Hello Administrative Admin {current_user.email}. Access granted."
-    }
-
-@app.get('/employee')
-def employee_dashboard(current_user: user_model.users = Depends(get_curr_user)):
-    return {
-        "message": "welcome to the  employee dashboard",
-        "user": current_user.email,
-        "role": current_user.role
+@app.get('/')
+def root():
+    return{
+        "message":"HRMS API is running",
+        "docs":"/docs"
     }
