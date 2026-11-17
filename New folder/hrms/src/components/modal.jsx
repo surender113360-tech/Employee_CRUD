@@ -1,5 +1,5 @@
-export default function Modal({title,onClose,children}){
-    return
+ function Modal({title,onClose,children}){
+    return(
     <div className="modal-backdrop" onMouseDown={onClose}>
         <section className="modal" onMouseDown={e=>e.stopPropagation()}>
             <div className="modal-head">
@@ -8,5 +8,7 @@ export default function Modal({title,onClose,children}){
                 </div>
                 {children}
         </section>
-    </div>
+    </div>)
 }
+
+export default Modal

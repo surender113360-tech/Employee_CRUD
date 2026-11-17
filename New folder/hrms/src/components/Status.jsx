@@ -1,8 +1,11 @@
-export default function Status({value}){
-    const text =String(value||'unknow');
-    return 
-    <span className={`status ${text.toLowerCase()}`}>
-        {text}
+import React from "react";
 
-    </span>
+export default function Status({value}){
+    const text = String(value||'unknown');
+    return(
+        <span className={`status ${text.toLowerCase()}`}>
+            {text}
+
+        </span>
+    )
 }
